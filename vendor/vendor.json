@@ -754,13 +754,13 @@
 			"versionExact": "0.3.15"
 		},
 		{
-			"checksumSHA1": "UpbA43PSGyAOp3WfQlMvKitZTKI=",
+			"checksumSHA1": "mu++DEo6w9IEbMp0StSRcSvWzmQ=",
 			"origin": "github.com/sgdigital-devops/gonsx/api/service",
 			"path": "github.com/sky-uk/gonsx/api/service",
-			"revision": "470fc62aec5424c99581cbd02944b3e2f5617644",
-			"revisionTime": "2017-07-17T13:40:10Z",
-			"version": "0.3.15",
-			"versionExact": "0.3.15"
+			"revision": "537f9260e498efbca520fa09e8de722d7488a1ab",
+			"revisionTime": "2019-05-01T22:00:15Z",
+			"version": "feature/service",
+			"versionExact": "feature/service"
 		},
 		{
 			"checksumSHA1": "K1PMAqhEoFwvMc4aZbJEEyssovo=",
