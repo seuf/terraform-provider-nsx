@@ -58,10 +58,18 @@ func loadESGId(t *testing.T) string {
 	return edgeid
 }
 
-func loadScopeId(t *testing.T) string {
-	scopeid := os.Getenv("NSX_TESTING_SCOPE_ID")
+func loadLogicalSwitchScopeId(t *testing.T) string {
+	scopeid := os.Getenv("NSX_TESTING_LOGICAL_SWITCH_SCOPE_ID")
 	if scopeid == "" {
-		t.Skip("skipping test; NSX_TESTING_SCOPE_ID not set")
+		t.Skip("skipping test; NSX_TESTING_LOGICAL_SWITCH_SCOPE_ID not set")
+	}
+	return scopeid
+}
+
+func loadServiceScopeId(t *testing.T) string {
+	scopeid := os.Getenv("NSX_TESTING_SERVICE_SCOPE_ID")
+	if scopeid == "" {
+		t.Skip("skipping test; NSX_TESTING_SERVICE_SCOPE_ID not set")
 	}
 	return scopeid
 }

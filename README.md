@@ -67,6 +67,8 @@ Resources needed:
 * DLR with two interfaces (vnic 10 and vnic 11)
 * ESG with one interface (vnic 0 (uplink))
 * Virtualwire
+* Scope for Service (usually globalroot-0)
+* Scope for Logical Switch
 
 The following reosurces are required (with example values):
 
@@ -74,4 +76,6 @@ The following reosurces are required (with example values):
 export NSX_TESTING_DLR_ID=edge-16
 export NSX_TESTING_ESG_ID=edge-17
 export NSX_TESTING_VIRTUALWIRE_ID=virtualwire-48
+export NSX_TESTING_LOCICAL_SWITCH_SCOPE_ID=vdnscope-1
+export NSX_TESTING_SERVICE_SCOPE_ID=globalroot-0
 ```

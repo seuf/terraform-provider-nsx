@@ -13,11 +13,11 @@ import (
 )
 
 func TestAccNSXLogicalSwitchBasic(t *testing.T) {
+	scopeID := loadLogicalSwitchScopeId(t)
 
 	randomInt := acctest.RandInt()
 	switchName := fmt.Sprintf("acctest-nsx-logical-switch-%d", randomInt)
 	updateSwitchName := fmt.Sprintf("acctest-nsx-logical-switch-%d-update", randomInt)
-	scopeID := loadScopeId(t)
 	testResourceName := "nsx_logical_switch.acctest"
 
 	fmt.Printf("\n\nlogical switch name is %s\n\n", switchName)
