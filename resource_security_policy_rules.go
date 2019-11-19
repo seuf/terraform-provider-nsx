@@ -134,7 +134,7 @@ func resourceSecurityPolicyRuleCreate(d *schema.ResourceData, m interface{}) err
 	}
 
 	if direction == "inbound" {
-		log.Printf(fmt.Sprintf("[DEBUG] policyToModify.AddInboundFirewallAction(%s, %s, %s, %s)", name, action, direction, serviceids))
+		log.Printf("[DEBUG] policyToModify.AddInboundFirewallAction(%s, %s, %s, %s)", name, action, direction, serviceids)
 		modifyErr := policyToModify.AddInboundFirewallAction(name, action, direction, securitygroupids, serviceids)
 		if err != nil {
 			return fmt.Errorf("Error in adding the rule to policy object: %s", modifyErr)
@@ -190,7 +190,7 @@ func resourceSecurityPolicyRuleRead(d *schema.ResourceData, m interface{}) error
 
 	existingAction := policyToRead.GetFirewallRuleByName(name)
 	id := existingAction.VsmUUID
-	log.Printf(fmt.Sprintf("[DEBUG] VsmUUID := %s", id))
+	log.Printf("[DEBUG] VsmUUID := %s", id)
 
 	// If the resource has been removed manually, notify Terraform of this fact.
 	if id == "" {
@@ -240,11 +240,47 @@ func resourceSecurityPolicyRuleDelete(d *schema.ResourceData, m interface{}) err
 		return fmt.Errorf("%s", updateAPI.ResponseObject())
 	}
 
-	// If we got here, the resource had existed, we deleted it and there was
-	// no error.  Notify Terraform of this fact and return successful
-	// completion.
-	d.SetId("")
-	log.Printf(fmt.Sprintf("[DEBUG] firewall rule with name %s from securitypolicy %s deleted.", name, securityPolicyName))
+	err = waitForRuleDeleted(securityPolicyName, name, 3, nsxclient)
 
+	if err != nil {
+		return err
+	}
+
+	d.SetId("")
+	log.Printf("[DEBUG] firewall rule with name %s from securitypolicy %s deleted.", name, securityPolicyName)
 	return nil
+}
+
+// Waits for the Rule to be deleted by querying the API and checking it is still there.
+//
+// Reason:
+// This might seem unnecessary but unfortunately if this is not done, resources that are used by this rule (i.e. service)
+// will fail to delete for a short amount of time (~1 second) after the deletion of the rule.
+// By reading back the security policy and confirming the rule has been removed this does not happen anymore and
+// is preferable to a sleep(1 second)
+func waitForRuleDeleted(securityPolicyName string, name string, iterations int, nsxclient *gonsx.NSXClient) error {
+
+	if iterations == 0 {
+		return nil
+	}
+
+	for i := 1; i < iterations+1; i++ {
+		log.Printf("[DEBUG] Check if SecurityPolicy %s/%s is deleted: Iteration %d", name, securityPolicyName, i)
+
+		policyToRead, err := getSingleSecurityPolicy(securityPolicyName, nsxclient)
+		if err != nil {
+			return err
+		}
+
+		existingAction := policyToRead.GetFirewallRuleByName(name)
+		id := existingAction.VsmUUID
+
+		if id == "" {
+			log.Printf(fmt.Sprintf("[DEBUG] Confirmed SecurityPolicy %s/%s deleted in %d iteration", name, securityPolicyName, i))
+			return nil
+		}
+	}
+
+	return fmt.Errorf("firewall rule with name %s from securitypolicy %s not deleted.", name, securityPolicyName)
+
 }
