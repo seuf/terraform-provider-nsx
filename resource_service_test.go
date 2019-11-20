@@ -16,7 +16,7 @@ func TestAccService(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:     func() { testAccPreCheck(t) },
 		Providers:    testAccProviders,
-		CheckDestroy: func(s *terraform.State) error { return testAccServiceWithPrefixDontExist(scopeID, "tf_testing") },
+		CheckDestroy: testAccServiceWithPrefixDontExist(scopeID, "tf_testing"),
 		Steps: []resource.TestStep{
 			{
 				Config: fmt.Sprintf(`   resource "nsx_service" "http" {
@@ -54,30 +54,33 @@ func TestAccService(t *testing.T) {
 					resource.TestCheckResourceAttr("nsx_service.http", "ports", "81"),
 					resource.TestCheckResourceAttrSet("nsx_service.http", "scopeid"),
 					testAccServiceWithNameExists(scopeID, "tf_testing_service_81"),
+					testAccServiceWithPrefixDontExist(scopeID, "tf_testing_service_80"),
 				),
 			},
 		},
 	})
 }
 
-func testAccServiceWithPrefixDontExist(scopeid string, prefix string) error {
-	nsxClient := testAccProvider.Meta().(*gonsx.NSXClient)
+func testAccServiceWithPrefixDontExist(scopeid string, prefix string) resource.TestCheckFunc {
+	return func(state *terraform.State) error {
+		nsxClient := testAccProvider.Meta().(*gonsx.NSXClient)
 
-	api := service.NewGetAll(scopeid)
-	err := nsxClient.Do(api)
-	if err != nil {
-		return err
-	}
-
-	serviceList := api.GetResponse()
-
-	for _, service := range serviceList.Applications {
-		if strings.HasPrefix(service.Name, prefix) {
-			return fmt.Errorf("There are still Services leftover: %s", service.Name)
+		api := service.NewGetAll(scopeid)
+		err := nsxClient.Do(api)
+		if err != nil {
+			return err
 		}
-	}
 
-	return nil
+		serviceList := api.GetResponse()
+
+		for _, service := range serviceList.Applications {
+			if strings.HasPrefix(service.Name, prefix) {
+				return fmt.Errorf("There are still Services leftover: %s", service.Name)
+			}
+		}
+
+		return nil
+	}
 }
 
 func testAccServiceWithNameExists(scopeid string, name string) resource.TestCheckFunc {
