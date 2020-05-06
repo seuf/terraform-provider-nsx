@@ -1,6 +1,6 @@
-TEST?=$$(go list ./... |grep -v 'vendor')
-GOFMT_FILES?=$$(find . -name '*.go' |grep -v vendor)
-COVER_TEST?=$$(go list ./... |grep -v 'vendor')
+TEST?=$$(go list ./...)
+GOFMT_FILES?=$$(find . -name '*.go')
+COVER_TEST?=$$(go list ./...)
 
 default: build
 
@@ -28,7 +28,7 @@ cover:
 
 vet:
 	@echo "go vet ."
-	@go vet $$(go list ./... | grep -v vendor/) ; if [ $$? -eq 1 ]; then \
+	@go vet $$(go list ./...) ; if [ $$? -eq 1 ]; then \
 		echo ""; \
 		echo "Vet found suspicious constructs. Please check the reported constructs"; \
 		echo "and fix them if necessary before submitting the code for review."; \
@@ -44,8 +44,6 @@ fmtcheck:
 errcheck:
 	@sh -c "'$(CURDIR)/scripts/errcheck.sh'"
 
-vendor-status:
-	@govendor status
 
 test-compile: fmtcheck
 	@if [ "$(TEST)" = "./..." ]; then \
@@ -55,4 +53,4 @@ test-compile: fmtcheck
 	fi
 	go test -c $(TEST) $(TESTARGS)
 
-.PHONY: build test testacc testrace cover vet fmt fmtcheck errcheck vendor-status test-compile
+.PHONY: build test testacc testrace cover vet fmt fmtcheck errcheck test-compile
