@@ -271,8 +271,6 @@ func getRuleFromSchema(d *schema.ResourceData) (*edgefirewall.FirewallRules, err
 				GroupingObjectId: src_grouping_object_id,
 			}
 		}
-	} else {
-		return nil, fmt.Errorf("source argument is required")
 	}
 	if v, ok := d.GetOk("destination"); ok {
 		for _, vv := range v.([]interface{}) {
@@ -284,8 +282,6 @@ func getRuleFromSchema(d *schema.ResourceData) (*edgefirewall.FirewallRules, err
 				GroupingObjectId: dst_grouping_object_id,
 			}
 		}
-	} else {
-		return nil, fmt.Errorf("destination argument is required")
 	}
 	if v, ok := d.GetOk("application"); ok {
 		for _, vv := range v.([]interface{}) {
@@ -295,8 +291,6 @@ func getRuleFromSchema(d *schema.ResourceData) (*edgefirewall.FirewallRules, err
 				ApplicationId: application_id,
 			}
 		}
-	} else {
-		return nil, fmt.Errorf("application argument is required")
 	}
 
 	log.Printf(fmt.Sprintf("[DEBUG] ============ Rule : %+v", rule))
