@@ -7,6 +7,7 @@ import (
 	"github.com/sky-uk/gonsx"
 	"github.com/sky-uk/gonsx/api/service"
 	"log"
+	"strings"
 )
 
 func resourceService() *schema.Resource {
@@ -15,6 +16,9 @@ func resourceService() *schema.Resource {
 		Read:   resourceServiceRead,
 		Delete: resourceServiceDelete,
 		Update: resourceServiceUpdate,
+		Importer: &schema.ResourceImporter{
+			State: resourceServiceImport,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -30,7 +34,8 @@ func resourceService() *schema.Resource {
 
 			"description": {
 				Type:     schema.TypeString,
-				Required: true,
+				Required: false,
+				Optional: true,
 			},
 
 			"protocol": {
@@ -105,6 +110,17 @@ func resourceServiceCreate(d *schema.ResourceData, meta interface{}) error {
 	d.SetId(id)
 
 	return resourceServiceRead(d, meta)
+}
+
+func resourceServiceImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	service_id := strings.Split(d.Id(), "_")
+	d.Set("scopeid", service_id[0])
+	d.SetId(service_id[1])
+	err := resourceServiceRead(d, meta)
+	if err != nil {
+		return nil, err
+	}
+	return []*schema.ResourceData{d}, nil
 }
 
 func resourceServiceRead(d *schema.ResourceData, meta interface{}) error {

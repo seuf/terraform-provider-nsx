@@ -15,6 +15,9 @@ func resourceEdgeInterface() *schema.Resource {
 		Read:   resourceEdgeInterfaceRead,
 		Delete: resourceEdgeInterfaceDelete,
 		Update: resourceEdgeInterfaceUpdate,
+		Importer: &schema.ResourceImporter{
+			State: ImportEdgeInterface,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"edgeid": &schema.Schema{
@@ -82,6 +85,14 @@ func buildAddressGroups(addressGroups []interface{}) []edgeinterface.AddressGrou
 		addressGroupList = append(addressGroupList, addr)
 	}
 	return addressGroupList
+}
+
+func ImportEdgeInterface(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	err := resourceEdgeInterfaceRead(d, meta)
+	if err != nil {
+		return nil, err
+	}
+	return []*schema.ResourceData{d}, nil
 }
 
 func resourceEdgeInterfaceCreate(d *schema.ResourceData, m interface{}) error {
