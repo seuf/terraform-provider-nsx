@@ -13,4 +13,5 @@ require (
 
 //replace github.com/sky-uk/gonsx => github.com/sgdigital-devops/gonsx v0.3.17-4
 //replace github.com/sky-uk/gonsx => github.com/orange-cloudfoundry/gonsx v0.4.1
-replace github.com/sky-uk/gonsx => github.com/seuf/gonsx v0.3.18-1
+replace github.com/sky-uk/gonsx => github.com/seuf/gonsx v0.3.18-2
+

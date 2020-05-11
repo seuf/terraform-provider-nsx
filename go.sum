@@ -354,6 +354,8 @@ github.com/seuf/gonsx v0.3.17-4.0.20200507142602-d17789b0880a h1:QwkMTmHsYWjnOyz
 github.com/seuf/gonsx v0.3.17-4.0.20200507142602-d17789b0880a/go.mod h1:O+Udpw0XbzOWliHCjX9Y56GC87vFg0xTTUljIKKFAVw=
 github.com/seuf/gonsx v0.3.18-1 h1:st/dUNl7lXC48tOtEEsuFlWuIWPu36KfOGN+NkoaBmE=
 github.com/seuf/gonsx v0.3.18-1/go.mod h1:O+Udpw0XbzOWliHCjX9Y56GC87vFg0xTTUljIKKFAVw=
+github.com/seuf/gonsx v0.3.18-2 h1:wEW+SFUBwJa4Eoakh/DuSz37pNdVhK1mIhJH99WyvQY=
+github.com/seuf/gonsx v0.3.18-2/go.mod h1:O+Udpw0XbzOWliHCjX9Y56GC87vFg0xTTUljIKKFAVw=
 github.com/seuf/gonsx v0.3.18 h1:5tkb++2TLmSrdCdRFAQxPaWA5ojTm9GDCNs0Q5HLlfk=
 github.com/seuf/gonsx v0.3.18/go.mod h1:O+Udpw0XbzOWliHCjX9Y56GC87vFg0xTTUljIKKFAVw=
 github.com/sgdigital-devops/gonsx v0.3.17-4 h1:9LcgDfThyolimZuL/pV/JF2zmsY2fr9ny07SFW14L2I=

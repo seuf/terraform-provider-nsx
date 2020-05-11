@@ -133,9 +133,12 @@ func resourceEdgeFirewallRuleCreate(d *schema.ResourceData, meta interface{}) er
 		return fmt.Errorf("Rule %s already exists on edge %s", name, edgeId)
 	}
 
-	rules, err := getRuleFromSchema(d)
+	rule, err := getRuleFromSchema(d)
+	rules := edgefirewall.FirewallRules{
+		FirewallRule: []edgefirewall.FirewallRule{*rule},
+	}
 
-	fRuleCreate := edgefirewall.NewCreateRule(edgeId, rules)
+	fRuleCreate := edgefirewall.NewCreateRule(edgeId, &rules)
 	err = nsxclient.Do(fRuleCreate)
 	if err != nil {
 		return err
@@ -209,14 +212,16 @@ func resourceEdgeFirewallRuleUpdate(d *schema.ResourceData, meta interface{}) er
 	if err != nil {
 		return err
 	}
-	log.Printf(fmt.Sprintf("[DEBUG] resourceEdgeFirewallRuleUpdate RULE READ %+v", rule))
 
-	rules, err := getRuleFromSchema(d)
+	r, err := getRuleFromSchema(d)
+	// r.RuleId = rule.RuleId
+	// r.RuleTag = rule.RuleTag
 	if err != nil {
 		return err
 	}
+	log.Printf(fmt.Sprintf("[DEBUG] resourceEdgeFirewallRuleUpdate RULE %+v", r))
 
-	fRuleUpdate := edgefirewall.NewUpdateRule(edgeId, rule.RuleId, rules)
+	fRuleUpdate := edgefirewall.NewUpdateRule(edgeId, rule.RuleId, r)
 	err = nsxclient.Do(fRuleUpdate)
 	if err != nil {
 		return err
@@ -244,7 +249,7 @@ func resourceEdgeFirewallRuleDelete(d *schema.ResourceData, meta interface{}) er
 	return nil
 }
 
-func getRuleFromSchema(d *schema.ResourceData) (*edgefirewall.FirewallRules, error) {
+func getRuleFromSchema(d *schema.ResourceData) (*edgefirewall.FirewallRule, error) {
 
 	rule := edgefirewall.FirewallRule{
 		Name:           d.Get("name").(string),
@@ -294,11 +299,8 @@ func getRuleFromSchema(d *schema.ResourceData) (*edgefirewall.FirewallRules, err
 	}
 
 	log.Printf(fmt.Sprintf("[DEBUG] ============ Rule : %+v", rule))
-	rules := edgefirewall.FirewallRules{
-		FirewallRule: []edgefirewall.FirewallRule{rule},
-	}
 
-	return &rules, nil
+	return &rule, nil
 }
 
 func getEdgeFirewallRuleByName(edgeId string, name string, meta interface{}) (edgefirewall.FirewallRule, error) {
